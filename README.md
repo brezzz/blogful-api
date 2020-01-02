@@ -24,3 +24,7 @@ Run the tests `npm test`
 ## Deploying
 
 When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+
+
+## "You might want to leave a reminder of how to run this command in your README.md so that you can easily find it again."
+## psql -U dunder_mifflin -d blogful -f .projects/blogful-api/seeds/seed.blogful_articles.sql

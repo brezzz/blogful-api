@@ -4,8 +4,13 @@ const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 
-const app = express()
+require('./server.js')
+
+
 const { NODE_ENV } = require('./config')
+const ArticlesService = require('./articles-service')
+const app = express()
+
 const morganOption = (NODE_ENV === 'production')
   ? 'tiny'
   : 'common';
@@ -17,6 +22,21 @@ app.use(cors())
 app.get('/', (req, res) => {
        res.send('Hello, boilerplate!')
      })
+
+     app.get('/articles', (req,res, next)=> {
+      const knexInstance = req.app.get('db')
+      ArticlesService.getAllArticles(knexInstance)
+        .then(articles => {
+          res.json(articles.map(article => ({
+                     id: article.id,
+                     title: article.title,
+                     style: article.style,
+                     content: article.content,
+                     date_published: new Date(article.date_published),
+                   })))
+       })
+       .catch(next)
+    })
 
 app.use(function errorHandler(error, req, res, next) {
     let response
