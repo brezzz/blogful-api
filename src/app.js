@@ -4,7 +4,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 
-require('./server.js')
+// require('./server')
 
 
 const { NODE_ENV } = require('./config')
@@ -38,6 +38,27 @@ app.get('/', (req, res) => {
        .catch(next)
     })
 
+    app.get('/articles/:article_id', (req, res, next) => {
+      const knexInstance = req.app.get('db')
+         ArticlesService.getById(knexInstance, req.params.article_id)
+           .then(article => {
+            if (!article) {
+                       return res.status(404).json({
+                         error: { message: `Article doesn't exist` }
+                       })
+                     }
+
+            res.json({
+                      id: article.id,
+                      title: article.title,
+                      style: article.style,
+                      content: article.content,
+                      date_published: new Date(article.date_published),
+                    })
+           })
+           .catch(next)
+        })
+
 app.use(function errorHandler(error, req, res, next) {
     let response
     if (NODE_ENV === 'production')  {
@@ -51,4 +72,4 @@ res.status(500).json(reponse)
 )
 
 
-module.exports = app
+module.exports = app;
